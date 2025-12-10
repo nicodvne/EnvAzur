@@ -6,6 +6,9 @@ use Domain\Entity\Project;
 
 interface ProjectRepositoryInterface
 {
-    //public function findById(int $id): Project;
     public function save(Project $project): void;
+
+    public function delete(Project $project): void;
+
+    public function deleteById(int $projectId): void;
 }

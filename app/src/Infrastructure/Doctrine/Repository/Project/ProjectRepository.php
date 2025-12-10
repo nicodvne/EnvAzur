@@ -23,4 +23,24 @@ class ProjectRepository implements ProjectRepositoryInterface
 
         $project->setId($doctrineProject->id);
     }
+
+    public function delete(Project $project): void
+    {
+        $doctrineProject = $this->em->find(DoctrineProjectEntity::class, $project->getId());
+
+        if ($doctrineProject !== null) {
+            $this->em->remove($doctrineProject);
+            $this->em->flush();
+        }
+    }
+
+    public function deleteById(int $projectId): void
+    {
+        $doctrineProject = $this->em->find(DoctrineProjectEntity::class, $projectId);
+
+        if ($doctrineProject !== null) {
+            $this->em->remove($doctrineProject);
+            $this->em->flush();
+        }
+    }
 }

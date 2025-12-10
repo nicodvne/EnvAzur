@@ -4,6 +4,7 @@ namespace Infrastructure\Symfony\Controller;
 
 use Application\DTO\Project\CreateProjectDTO;
 use Application\UseCase\Project\CreateProjectHandler;
+use Application\UseCase\Project\DeleteProjectHandler;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -23,5 +24,14 @@ final class ProjectController extends AbstractController
             'id' => $project->getId(),
             'name' => $project->getName(),
         ]);
+    }
+
+    #[Route('/project/delete', name: 'app_project_delete', methods: ['GET'])]
+    public function delete(Request $request, DeleteProjectHandler $handler): JsonResponse
+    {
+        $projectId = 2;
+        $handler->handle($projectId);
+
+        return new JsonResponse(['status' => 'Project deleted']);
     }
 }

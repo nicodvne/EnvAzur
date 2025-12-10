@@ -15,4 +15,14 @@ class Project
 
     #[ORM\Column(length: 255)]
     public string $name;
+
+    public function getId(): int
+    {
+        return $this->id;
+    }
+
+    public function getName(): string
+    {
+        return $this->name;
+    }
 }
