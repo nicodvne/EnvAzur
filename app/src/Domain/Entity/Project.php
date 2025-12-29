@@ -4,13 +4,20 @@ namespace Domain\Entity;
 
 class Project
 {
-
     private ?int $id;
     private string $name;
+    private string $slug;
+    private ?string $description;
 
-    public function __construct(string $name) {
+    public function __construct(
+        string $name, 
+        string $slug, 
+        ?string $description = null
+    ) {
         $this->id = null;
         $this->name = $name;
+        $this->slug = $slug;
+        $this->description = $description;
     }
 
     public function getId(): ?int
@@ -26,5 +33,30 @@ class Project
     public function getName(): string
     {
         return $this->name;
+    }
+
+    public function setName(string $name): void
+    {
+        $this->name = $name;
+    }
+
+    public function getSlug(): string
+    {
+        return $this->slug;
+    }
+
+    public function setSlug(string $slug): void
+    {
+        $this->slug = $slug;
+    }
+
+    public function getDescription(): ?string
+    {
+        return $this->description;
+    }
+
+    public function setDescription(?string $description): void
+    {
+        $this->description = $description;
     }
 }

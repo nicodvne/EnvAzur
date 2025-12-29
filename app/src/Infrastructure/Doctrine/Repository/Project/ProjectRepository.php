@@ -17,6 +17,8 @@ class ProjectRepository implements ProjectRepositoryInterface
     {
         $doctrineProject = new DoctrineProjectEntity();
         $doctrineProject->name = $project->getName();
+        $doctrineProject->slug = $project->getSlug();
+        $doctrineProject->description = $project->getDescription();
 
         $this->em->persist($doctrineProject);
         $this->em->flush();
@@ -34,13 +36,17 @@ class ProjectRepository implements ProjectRepositoryInterface
         }
     }
 
-    public function deleteById(int $projectId): void
+    public function deleteBySlug(string $projectSlug): void
     {
-        $doctrineProject = $this->em->find(DoctrineProjectEntity::class, $projectId);
+        $doctrineProject = $this->em
+            ->getRepository(DoctrineProjectEntity::class)
+            ->findOneBy(['slug' => $projectSlug]);
 
         if ($doctrineProject !== null) {
             $this->em->remove($doctrineProject);
             $this->em->flush();
+        } else {
+            throw new \Exception('Project not found');
         }
     }
 }

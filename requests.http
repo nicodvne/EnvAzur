@@ -1,0 +1,10 @@
+GET http://localhost/project
+
+###
+
+POST http://localhost/project/create
+content-type: application/json
+
+{
+    "projectName": "New Project"
+}

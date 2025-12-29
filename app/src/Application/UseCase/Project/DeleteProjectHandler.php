@@ -10,8 +10,8 @@ class DeleteProjectHandler
         private ProjectRepositoryInterface $projectRepository,
     ){}
 
-    public function handle(int $projectId): void
+    public function handle(string $projectSlug): void
     {
-        $this->projectRepository->deleteById($projectId);
+        $this->projectRepository->deleteBySlug($projectSlug);
     }
 }

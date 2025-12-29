@@ -10,5 +10,5 @@ interface ProjectRepositoryInterface
 
     public function delete(Project $project): void;
 
-    public function deleteById(int $projectId): void;
+    public function deleteBySlug(string $projectSlug): void;
 }
