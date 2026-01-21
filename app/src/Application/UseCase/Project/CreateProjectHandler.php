@@ -14,8 +14,9 @@ class CreateProjectHandler
 
     public function handle(CreateProjectDTO $dto): Project
     {
-        $project = new Project($dto->name, $dto->slug, $dto->description);
-
+        $project = new Project($dto->name, $dto->description);
+        $project->setSlug($dto->slug);
+        
         $this->projectRepository->save($project);
 
         return $project;

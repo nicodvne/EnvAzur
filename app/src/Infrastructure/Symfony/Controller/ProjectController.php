@@ -4,6 +4,7 @@ namespace Infrastructure\Symfony\Controller;
 
 use Application\DTO\Project\CreateProjectDTO;
 use Application\Service\ApiResponse;
+use Application\Service\Project\ProjectService;
 use Application\UseCase\Project\CreateProjectHandler;
 use Application\UseCase\Project\DeleteProjectHandler;
 use Doctrine\DBAL\Exception\UniqueConstraintViolationException;
@@ -20,7 +21,9 @@ final class ProjectController extends AbstractController
         private CreateProjectHandler $createProjectHandler,
         private DeleteProjectHandler $deleteProjectHandler,
         private ApiResponse $apiResponse,
+        private ProjectService $projectService,
     ){}
+
 
     #[Route('/project/create', name: 'app_project_create', methods: ['POST'])]
     public function createAction(Request $request): JsonResponse 
@@ -28,13 +31,13 @@ final class ProjectController extends AbstractController
         $dto = new CreateProjectDTO();
         $payload = $request->getPayload();
 
-        if (!$payload->has('projectName') || !$payload->has('projectSlug')) {
+        if (!$payload->has('projectName')) {
             return $this->apiResponse->error('Missing required datas', 400);
         }
 
         $dto->name = $payload->get('projectName');
-        $dto->slug = $payload->get('projectSlug');
         $dto->description = $payload->get('projectDescription') ?? null;
+        $dto->slug = $this->projectService->generateSlug($dto->name);
 
         try {
             $project = $this->createProjectHandler->handle($dto);
@@ -42,7 +45,6 @@ final class ProjectController extends AbstractController
             return $this->apiResponse->success([
                 'id' => $project->getId(),
                 'name' => $project->getName(),
-                'slug' => $project->getSlug(),
                 'description' => $project->getDescription(),
             ]);
         } catch (UniqueConstraintViolationException $e) {

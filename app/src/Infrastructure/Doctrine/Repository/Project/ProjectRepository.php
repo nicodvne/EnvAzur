@@ -17,8 +17,8 @@ class ProjectRepository implements ProjectRepositoryInterface
     {
         $doctrineProject = new DoctrineProjectEntity();
         $doctrineProject->name = $project->getName();
-        $doctrineProject->slug = $project->getSlug();
         $doctrineProject->description = $project->getDescription();
+        $doctrineProject->slug = $project->getSlug();
 
         $this->em->persist($doctrineProject);
         $this->em->flush();

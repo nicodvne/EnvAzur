@@ -3,6 +3,7 @@
 namespace Infrastructure\Doctrine\Entity\Project;
 
 use Doctrine\ORM\Mapping as ORM;
+use Gedmo\Mapping\Annotation\Slug;
 
 #[ORM\Entity]
 #[ORM\Table(name: 'project')]
@@ -17,6 +18,7 @@ class Project
     public string $name;
 
     #[ORM\Column(length: 255, unique: true, nullable: false)]
+    #[Slug(fields: ['name'])]
     public string $slug;
 
     #[ORM\Column(type: 'text', nullable: true)]

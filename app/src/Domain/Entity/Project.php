@@ -11,12 +11,10 @@ class Project
 
     public function __construct(
         string $name, 
-        string $slug, 
         ?string $description = null
     ) {
         $this->id = null;
         $this->name = $name;
-        $this->slug = $slug;
         $this->description = $description;
     }
 
