@@ -28,18 +28,14 @@ final class ProjectController extends AbstractController
     #[Route('/project/create', name: 'app_project_create', methods: ['POST'])]
     public function createAction(Request $request): JsonResponse 
     {
-        $dto = new CreateProjectDTO();
         $payload = $request->getPayload();
 
         if (!$payload->has('projectName')) {
             return $this->apiResponse->error('Missing required datas', 400);
         }
 
-        $dto->name = $payload->get('projectName');
-        $dto->description = $payload->get('projectDescription') ?? null;
-        $dto->slug = $this->projectService->generateSlug($dto->name);
-
         try {
+            $dto = $this->projectService->buildProjectDTO($payload->all());
             $project = $this->createProjectHandler->handle($dto);
 
             return $this->apiResponse->success([

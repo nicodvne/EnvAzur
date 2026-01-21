@@ -12,6 +12,10 @@ class CreateProjectHandler
         private ProjectRepositoryInterface $projectRepository,
     ){}
 
+    /**
+     * @throws \Exception
+     * @throws UniqueConstraintViolationException
+     */
     public function handle(CreateProjectDTO $dto): Project
     {
         $project = new Project($dto->name, $dto->description);
