@@ -11,4 +11,6 @@ interface ProjectRepositoryInterface
     public function delete(Project $project): void;
 
     public function deleteBySlug(string $projectSlug): void;
+
+    public function getOneBySlug(string $projectSlug): ?Project;
 }

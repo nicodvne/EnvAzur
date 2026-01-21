@@ -38,3 +38,6 @@ services:
     App\Domain\Repository\ProjectRepositoryInterface:
         alias: App\Infrastructure\Doctrine\Repository\Project\DoctrineProjectRepository
 
+    App\Domain\Repository\VariableRepositoryInterface:
+        alias: App\Infrastructure\Doctrine\Repository\Variable\DoctrineVariableRepository
+

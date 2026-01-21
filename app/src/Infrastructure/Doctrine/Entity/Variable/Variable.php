@@ -39,9 +39,9 @@ class Variable
         return $this->varValue;
     }
 
-    public function getProject(): Project
+    public function setVarValue(string $varValue): void
     {
-        return $this->project;
+        $this->varValue = $varValue;
     }
 
     public function changeVarValue(string $varValue): void
@@ -53,4 +53,16 @@ class Variable
     {
         $this->varKey = $varKey;
     }
+
+    public function getProject(): Project
+    {
+        return $this->project;
+    }
+
+    public function setProject(Project $project): void
+    {
+        $this->project = $project;
+    }
+
+
 }
