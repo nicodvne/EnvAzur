@@ -2,8 +2,11 @@
 
 namespace Infrastructure\Doctrine\Entity\Project;
 
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Mapping\Annotation\Slug;
+use Infrastructure\Doctrine\Entity\Variable\Variable;
 
 #[ORM\Entity]
 #[ORM\Table(name: 'project')]
@@ -12,17 +15,25 @@ class Project
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
-    public int $id;
+    private int $id;
 
     #[ORM\Column(length: 255)]
-    public string $name;
+    private string $name;
 
     #[ORM\Column(length: 255, unique: true, nullable: false)]
     #[Slug(fields: ['name'])]
-    public string $slug;
+    private string $slug;
 
     #[ORM\Column(type: 'text', nullable: true)]
-    public ?string $description;
+    private ?string $description;
+
+    #[ORM\OneToMany(targetEntity: Variable::class, mappedBy: 'project')]
+    private Collection $variables;
+
+    public function __construct()
+    {
+        $this->variables = new ArrayCollection();
+    }
 
     public function getId(): int
     {
@@ -42,5 +53,10 @@ class Project
     public function getDescription(): ?string
     {
         return $this->description;
+    }
+
+    public function getVariables(): Collection
+    {
+        return $this->variables;
     }
 }
