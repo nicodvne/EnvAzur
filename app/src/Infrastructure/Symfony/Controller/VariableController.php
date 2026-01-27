@@ -23,7 +23,7 @@ final class VariableController extends AbstractController
     #[Route('/variable/create', name: 'app_variable_create', methods: ['POST'])]
     public function createAction(Request $request): JsonResponse
     {
-        if ($this->variableService->requestHasRequiredData($request)) {
+        if (!$this->variableService->requestHasRequiredData($request->getPayload()->all())) {
             return $this->apiResponse->error('Missing required datas', 400);
         }
 

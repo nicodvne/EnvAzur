@@ -3,14 +3,19 @@
 namespace Application\Service\Variable;
 
 use Application\DTO\Variable\CreateVariableDTO;
-use Symfony\Component\HttpFoundation\Request;
+use Application\Utils\Utils;
 
 class VariableService {
-    public function requestHasRequiredData(Request $request): bool
-    {
-        $payload = $request->getPayload();
 
-        return !$payload->has('varKey') || !$payload->has('varValue') || !$payload->has('projectSlug');
+    public function __construct(
+        private Utils $utils
+    ) {}
+
+    public function requestHasRequiredData(array $payload): bool
+    {
+        return $this->utils->arrayHas($payload, 'varKey') && 
+            $this->utils->arrayHas($payload, 'varValue') && 
+            $this->utils->arrayHas($payload, 'projectSlug');
     }
 
     public function buildVariableDTO(array $payload): CreateVariableDTO
