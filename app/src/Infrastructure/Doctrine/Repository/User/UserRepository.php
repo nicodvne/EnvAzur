@@ -37,13 +37,15 @@ class UserRepository extends ServiceEntityRepository implements PasswordUpgrader
 
     public function createUser(EntityUser $user): void
     {
-        $doctrineVariable = new User();
+        $doctrineUser = new User();
         
-        $doctrineVariable->setUsername($user->getUsername());
-        $doctrineVariable->setEmail($user->getEmail());
-        $doctrineVariable->setPassword($user->getPassword());
+        $doctrineUser->setUsername($user->getUsername());
+        $doctrineUser->setEmail($user->getEmail());
+        $doctrineUser->setPassword($user->getPassword());
 
-        $this->getEntityManager()->persist($doctrineVariable);
+        $doctrineUser->setRoles(['ROLE_USER']);
+
+        $this->getEntityManager()->persist($doctrineUser);
         $this->getEntityManager()->flush();
     }
 
