@@ -7,6 +7,8 @@ use Doctrine\Persistence\ManagerRegistry;
 use Domain\Entity\User as EntityUser;
 use Domain\Repository\UserRepositoryInterface;
 use Infrastructure\Doctrine\Entity\User\User;
+use Infrastructure\Mapper\User\UserMapper;
+use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\Security\Core\Exception\UnsupportedUserException;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\PasswordUpgraderInterface;
@@ -16,8 +18,10 @@ use Symfony\Component\Security\Core\User\PasswordUpgraderInterface;
  */
 class UserRepository extends ServiceEntityRepository implements PasswordUpgraderInterface, UserRepositoryInterface
 {
-    public function __construct(ManagerRegistry $registry)
-    {
+    public function __construct(
+        private ManagerRegistry $registry,
+        private UserPasswordHasherInterface $passwordHasher
+    ){
         parent::__construct($registry, User::class);
     }
 
@@ -41,7 +45,9 @@ class UserRepository extends ServiceEntityRepository implements PasswordUpgrader
         
         $doctrineUser->setUsername($user->getUsername());
         $doctrineUser->setEmail($user->getEmail());
-        $doctrineUser->setPassword($user->getPassword());
+        $doctrineUser->setPassword(
+            $this->passwordHasher->hashPassword($doctrineUser, $user->getPassword())
+        );
 
         $doctrineUser->setRoles(['ROLE_USER']);
 
@@ -49,28 +55,14 @@ class UserRepository extends ServiceEntityRepository implements PasswordUpgrader
         $this->getEntityManager()->flush();
     }
 
-    //    /**
-    //     * @return User[] Returns an array of User objects
-    //     */
-    //    public function findByExampleField($value): array
-    //    {
-    //        return $this->createQueryBuilder('u')
-    //            ->andWhere('u.exampleField = :val')
-    //            ->setParameter('val', $value)
-    //            ->orderBy('u.id', 'ASC')
-    //            ->setMaxResults(10)
-    //            ->getQuery()
-    //            ->getResult()
-    //        ;
-    //    }
+    public function getUserByEmail(string $email): ?EntityUser
+    {
+        $doctrineUser = $this->findOneBy(['email' => $email]);
 
-    //    public function findOneBySomeField($value): ?User
-    //    {
-    //        return $this->createQueryBuilder('u')
-    //            ->andWhere('u.exampleField = :val')
-    //            ->setParameter('val', $value)
-    //            ->getQuery()
-    //            ->getOneOrNullResult()
-    //        ;
-    //    }
+        if (!$doctrineUser) {
+            return null;
+        }
+
+        return UserMapper::toDomain($doctrineUser);
+    }
 }

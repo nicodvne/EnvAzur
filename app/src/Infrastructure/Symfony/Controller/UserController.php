@@ -46,4 +46,26 @@ final class UserController extends AbstractController {
             return $this->apiResponse->error($e->getMessage(), false, 500);
         }
     }
+
+    #[Route('/user/password/check', name: 'app_user_password_check', methods: ['POST'])]
+    public function passwordCheck(Request $request): JsonResponse
+    {
+        $payload = $request->getPayload();
+
+        if (!$this->userService->checkPasswordRequestHasRequiredData($payload->all())) {
+            return $this->apiResponse->error('Missing required datas', 400);
+        }
+
+        try {
+            $isCorrectPassword = $this->userService->verifyPassword($payload->all());
+
+            if ($isCorrectPassword) {
+                return $this->apiResponse->success(['status' => 'Password correct']);
+            } else {
+                return $this->apiResponse->error('Password incorrect', 400);
+            }
+        } catch (\Exception $e) {
+            return $this->apiResponse->error($e->getMessage(), false, 500);
+        }
+    }
 }

@@ -55,4 +55,5 @@ class User {
     public function addRole(string $role): void {
         $this->roles[] = $role;
     }
+
 }

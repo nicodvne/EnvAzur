@@ -9,7 +9,9 @@ use Infrastructure\Doctrine\Repository\User\UserRepository;
 class UserService {
 
     public function __construct(
-        private Utils $utils
+        private Utils $utils,
+        private PasswordChecker $passwordChecker,
+        private UserRepository $userRepository
     ) {}
 
     public function buildUserDTO(array $payload): CreateUserDTO {
@@ -26,5 +28,24 @@ class UserService {
         return $this->utils->arrayHas($payload, 'email') &&
             $this->utils->arrayHas($payload, 'password') &&
             $this->utils->arrayHas($payload, 'username');
+    }
+
+    public function checkPasswordRequestHasRequiredData(array $payload): bool 
+    {
+        return $this->utils->arrayHas($payload, 'email') &&
+            $this->utils->arrayHas($payload, 'password');
+    }
+
+    public function verifyPassword(array $userDatas): bool {
+        $email = $userDatas['email'];
+        $password = $userDatas['password'];
+        
+        $user = $this->userRepository->getUserByEmail($email);
+
+        if (!$user) {
+            return false;
+        }
+
+        return $this->passwordChecker->verifyPassword($user, $password);
     }
 }
