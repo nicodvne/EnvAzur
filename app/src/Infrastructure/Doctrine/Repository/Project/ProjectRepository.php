@@ -16,14 +16,14 @@ class ProjectRepository implements ProjectRepositoryInterface
     public function save(Project $project): void
     {
         $doctrineProject = new DoctrineProjectEntity();
-        $doctrineProject->name = $project->getName();
-        $doctrineProject->description = $project->getDescription();
-        $doctrineProject->slug = $project->getSlug();
-
+        $doctrineProject->setName($project->getName());
+        $doctrineProject->setSlug($project->getSlug());
+        $doctrineProject->setDescription($project->getDescription());
+        
         $this->em->persist($doctrineProject);
         $this->em->flush();
 
-        $project->setId($doctrineProject->id);
+        $project->setId($doctrineProject->getId());
     }
 
     public function delete(Project $project): void
@@ -48,5 +48,26 @@ class ProjectRepository implements ProjectRepositoryInterface
         } else {
             throw new \Exception('Project not found');
         }
+    }
+
+    public function getOneBySlug(string $projectSlug): ?Project
+    {
+        $doctrineProject = $this->em
+            ->getRepository(DoctrineProjectEntity::class)
+            ->findOneBy(['slug' => $projectSlug]);
+
+        if ($doctrineProject !== null) {
+            $project = new Project(
+                $doctrineProject->getName(),
+                $doctrineProject->getDescription()
+            );
+
+            $project->setId($doctrineProject->getId());
+            $project->setSlug($doctrineProject->getSlug());
+
+            return $project;
+        }
+
+        return null;
     }
 }
